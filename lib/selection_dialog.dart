@@ -1,5 +1,5 @@
-import 'package:country_code_picker/country_code.dart';
-import 'package:country_code_picker/country_localizations.dart';
+import 'country_code.dart';
+import 'country_localizations.dart';
 import 'package:flutter/material.dart';
 
 /// selection dialog used for selection of the country code

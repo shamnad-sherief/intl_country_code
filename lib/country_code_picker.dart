@@ -1,10 +1,9 @@
-library country_code_picker;
+library intl_country_code;
 
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:country_code_picker/country_code.dart';
-import 'package:country_code_picker/country_codes.dart';
-import 'package:country_code_picker/selection_dialog.dart';
-import 'package:flutter/foundation.dart';
+import 'country_code.dart';
+import 'country_codes.dart';
+import 'selection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:universal_platform/universal_platform.dart';
@@ -80,6 +79,15 @@ class CountryCodePicker extends StatefulWidget {
   /// [BoxDecoration] for the flag image
   final Decoration? flagDecoration;
 
+  ///  margin of the flag
+  final EdgeInsetsGeometry? flagMargin;
+
+  /// padding
+  final EdgeInsetsGeometry? mainTextPadding;
+
+  /// drop down button padding
+  final EdgeInsetsGeometry? dropDownButtonPadding;
+
   /// An optional argument for injecting a list of countries
   /// with customized codes.
   final List<Map<String, String>> countryList;
@@ -117,6 +125,9 @@ class CountryCodePicker extends StatefulWidget {
     this.dialogSize,
     this.dialogBackgroundColor,
     this.closeIcon = const Icon(Icons.close),
+    this.flagMargin = const EdgeInsets.only(right: 16.0, left: 8.0),
+    this.mainTextPadding = const EdgeInsets.symmetric(horizontal: 16.0),
+    this.dropDownButtonPadding = const EdgeInsets.only(right: 16.0, left: 8.0),
     this.countryList = codes,
     Key? key,
   }) : super(key: key);
@@ -182,9 +193,8 @@ class CountryCodePickerState extends State<CountryCodePicker> {
                         ? Clip.none
                         : Clip.hardEdge,
                     decoration: widget.flagDecoration,
-                    margin: widget.alignLeft
-                        ? const EdgeInsets.only(right: 16.0, left: 8.0)
-                        : const EdgeInsets.only(right: 16.0),
+                    margin: widget.flagMargin ??
+                        EdgeInsets.zero, // Set margin using flagMargin property
                     child: Image.asset(
                       selectedItem!.flagUri!,
                       package: 'country_code_picker',
@@ -195,13 +205,18 @@ class CountryCodePickerState extends State<CountryCodePicker> {
               if (!widget.hideMainText)
                 Flexible(
                   fit: widget.alignLeft ? FlexFit.tight : FlexFit.loose,
-                  child: Text(
-                    widget.showOnlyCountryWhenClosed
-                        ? selectedItem!.toCountryStringOnly()
-                        : selectedItem.toString(),
-                    style:
-                        widget.textStyle ?? Theme.of(context).textTheme.button,
-                    overflow: widget.textOverflow,
+                  child: Padding(
+                    padding: widget.mainTextPadding ??
+                        EdgeInsets
+                            .zero, // Set padding using mainTextPadding property
+                    child: Text(
+                      widget.showOnlyCountryWhenClosed
+                          ? selectedItem!.toCountryStringOnly()
+                          : selectedItem.toString(),
+                      style: widget.textStyle ??
+                          Theme.of(context).textTheme.labelLarge,
+                      overflow: widget.textOverflow,
+                    ),
                   ),
                 ),
               if (widget.showDropDownButton)
@@ -209,14 +224,15 @@ class CountryCodePickerState extends State<CountryCodePicker> {
                   flex: widget.alignLeft ? 0 : 1,
                   fit: widget.alignLeft ? FlexFit.tight : FlexFit.loose,
                   child: Padding(
-                      padding: widget.alignLeft
-                          ? const EdgeInsets.only(right: 16.0, left: 8.0)
-                          : const EdgeInsets.only(right: 16.0),
-                      child: Icon(
-                        Icons.arrow_drop_down,
-                        color: Colors.grey,
-                        size: widget.flagWidth,
-                      )),
+                    padding: widget.dropDownButtonPadding ??
+                        EdgeInsets
+                            .zero, // Set padding using dropDownButtonPadding property
+                    child: Icon(
+                      Icons.arrow_drop_down,
+                      color: Colors.grey,
+                      size: widget.flagWidth,
+                    ),
+                  ),
                 ),
             ],
           ),
